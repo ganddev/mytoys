@@ -7,91 +7,125 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
 import de.ahlfeld.mytoys.data.NavigationEntry;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Created by bjornahlfeld on 02.02.18.
+ * Created by bjornahlfeld on 06.02.18.
  */
 @RunWith(MockitoJUnitRunner.class)
 public class NavigationEntryViewModelTest {
 
     @Mock
     private NavigationEntry mockedNavigationEntry;
-
     @Mock
-    private NavigationEntryItemNavigator mockedNavigationEntryItemNavigator;
+    NavigationEntryItemNavigator mockedNavigationEntryItemNavigator;
 
     private NavigationEntryViewModel sut;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+    }
+
+    @Test
+    public void getLabel_returnsTheLabelFromTheNavigationEntry() throws Exception {
+        String MY_LABEL = "My Label";
+        when(mockedNavigationEntry.getLabel()).thenReturn(MY_LABEL);
         sut = new NavigationEntryViewModel(mockedNavigationEntry);
-        sut.setItemNavigator(mockedNavigationEntryItemNavigator);
+
+        assertEquals(MY_LABEL, sut.getLabel().get());
     }
 
     @Test
-    public void getLabel() throws Exception {
-        String label = "My test label";
-        when(mockedNavigationEntry.getLabel()).thenReturn(label);
+    public void isSection_whenNavigationEntryTypeReturnsSection() throws Exception {
+        when(mockedNavigationEntry.getType()).thenReturn("section");
+        sut = new NavigationEntryViewModel(mockedNavigationEntry);
 
-        assertEquals(label, sut.getLabel());
+        assertTrue(sut.isSection().get());
     }
 
     @Test
-    public void getChildren() throws Exception {
-        List<NavigationEntry> children = new ArrayList<>();
-        children.add(new NavigationEntry());
-        children.add(new NavigationEntry());
-        when(mockedNavigationEntry.getChildren()).thenReturn(children);
+    public void isSection_whenNavigationEntryTypeReturnsNode() throws Exception {
+        when(mockedNavigationEntry.getType()).thenReturn("node");
+        sut = new NavigationEntryViewModel(mockedNavigationEntry);
 
-        assertEquals(children, sut.getChildren());
+        assertFalse(sut.isSection().get());
+    }
+
+    @Test
+    public void hasChildren_whenNavigationEntryHasNoChildren() throws Exception {
+        when(mockedNavigationEntry.getChildren()).thenReturn(Collections.<NavigationEntry>emptyList());
+        sut = new NavigationEntryViewModel(mockedNavigationEntry);
+
+        assertFalse(sut.hasChildren().get());
     }
 
     @Test
     public void setItemNavigator() throws Exception {
-
     }
 
     @Test
-    public void onNavigationEntryClick() throws Exception {
-        //depends on the type!!!
-        //Type is section
-        when(mockedNavigationEntry.getType()).thenReturn("section");
-        sut.onNavigationEntryClick();
-        verify(mockedNavigationEntryItemNavigator, times(1))
-                .onNavigationEntryClick(mockedNavigationEntry);
-
-        //Type is node
+    public void onNavigationEntryClick_whenNavigationEntryIsNodeCallsNavigationEntryClicked() throws Exception {
         when(mockedNavigationEntry.getType()).thenReturn("node");
-        sut.onNavigationEntryClick();
-        verify(mockedNavigationEntryItemNavigator, times(1))
-                .onNavigationEntryClick(mockedNavigationEntry);
+        sut = new NavigationEntryViewModel(mockedNavigationEntry);
+        sut.setItemNavigator(mockedNavigationEntryItemNavigator);
 
-        //Type is link
-        when(mockedNavigationEntry.getType()).thenReturn("link");
-        String url = "http://www.mytoys.de";
-        when(mockedNavigationEntry.getUrl()).thenReturn(url);
         sut.onNavigationEntryClick();
-        verify(mockedNavigationEntryItemNavigator, times(1))
-                .onLinkClicked(url);
+
+        verify(mockedNavigationEntryItemNavigator,
+                times(1))
+                .onNavigationEntryClick(mockedNavigationEntry);
     }
+
+    @Test
+    public void onNavigationEntryClick_whenNavigationEntryIsSectionCallsNothingNavigationEntryClicked() throws Exception {
+        when(mockedNavigationEntry.getType()).thenReturn("section");
+        sut = new NavigationEntryViewModel(mockedNavigationEntry);
+        sut.setItemNavigator(mockedNavigationEntryItemNavigator);
+
+        sut.onNavigationEntryClick();
+
+        verify(mockedNavigationEntryItemNavigator,
+                times(0))
+                .onNavigationEntryClick(mockedNavigationEntry);
+        verify(mockedNavigationEntryItemNavigator,
+                times(0))
+                .onLinkClicked(anyString());
+        verify(mockedNavigationEntryItemNavigator,
+                times(0))
+                .onCloseDrawerClicked();
+        verify(mockedNavigationEntryItemNavigator,
+                times(0))
+                .onUpClicked();
+    }
+
+    @Test
+    public void onNavigationEntryClick_whenNavigationEntryIsLinkCallsOnLickClicked() throws Exception {
+        String TEST_URL = "test_url";
+        when(mockedNavigationEntry.getType()).thenReturn("link");
+        when(mockedNavigationEntry.getUrl()).thenReturn(TEST_URL);
+        sut = new NavigationEntryViewModel(mockedNavigationEntry);
+        sut.setItemNavigator(mockedNavigationEntryItemNavigator);
+
+        sut.onNavigationEntryClick();
+
+        verify(mockedNavigationEntryItemNavigator,
+                times(1))
+                .onLinkClicked(TEST_URL);
+    }
+
 
     @Test
     public void setNavigationEntry() throws Exception {
-        NavigationEntry mockedEntry = mock(NavigationEntry.class);
-
-        sut.setNavigationEntry(mockedEntry);
-
-        assertEquals(mockedEntry, sut.mNavigationEntry.get());
     }
 }

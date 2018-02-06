@@ -61,6 +61,7 @@ public class NavigationEntryViewModel extends ViewModel {
     private void navigateTo(@NonNull NavigationEntry navigationEntry) {
         switch (navigationEntry.getType()) {
             case "section":
+                return;
             case "node":
                 itemNavigator.get().onNavigationEntryClick(navigationEntry);
                 break;

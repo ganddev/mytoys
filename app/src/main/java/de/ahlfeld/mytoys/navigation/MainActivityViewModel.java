@@ -13,9 +13,6 @@ import java.util.Stack;
 import de.ahlfeld.mytoys.data.NavigationEntry;
 import de.ahlfeld.mytoys.data.source.NavigationEntriesDataSource;
 import de.ahlfeld.mytoys.data.source.NavigationEntriesRepository;
-import de.ahlfeld.mytoys.data.source.remote.NavigationEntriesDaoProvider;
-import de.ahlfeld.mytoys.data.source.remote.NavigationRemoteDataSource;
-import de.ahlfeld.mytoys.data.source.remote.OkHttpClientProvider;
 
 /**
  * Created by bjornahlfeld on 01.02.18.
@@ -27,9 +24,9 @@ public class MainActivityViewModel extends ViewModel implements NavigationEntrie
     private final MutableLiveData<List<NavigationEntry>> mNavigationEntries = new MutableLiveData<>();
     private Stack<NavigationEntry> mNavigationStack = new Stack<>();
 
-    public MainActivityViewModel() {
+    public MainActivityViewModel(@NonNull NavigationEntriesRepository navigationEntriesRepository) {
         mParentNavigationEntry = null;
-        mNavigationEntriesRepository = new NavigationEntriesRepository(new NavigationRemoteDataSource(NavigationEntriesDaoProvider.get(OkHttpClientProvider.get())));
+        mNavigationEntriesRepository = navigationEntriesRepository;
         loadNavigationEntries();
     }
 
