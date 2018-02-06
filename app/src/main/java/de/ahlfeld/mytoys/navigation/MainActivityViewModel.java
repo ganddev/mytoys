@@ -62,6 +62,7 @@ public class MainActivityViewModel extends ViewModel implements NavigationEntrie
     public void reset() {
         mParentNavigationEntry = null;
         mNavigationStack.removeAllElements();
+        loadNavigationEntries();
     }
 
     private void loadNavigationEntries() {

@@ -25,6 +25,7 @@ import de.ahlfeld.mytoys.navigation.NavigationEntryItemNavigator;
 
 public class MainActivity extends AppCompatActivity implements NavigationEntryItemNavigator {
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String DEFAULT_URL = "https://www.mytoys.de";
     private ActivityMainBinding binding;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationEntryAdapter mNavigationEntryAdapter;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationEntryIt
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         myWebView.setWebViewClient(new WebViewClient());
+        myWebView.loadUrl(DEFAULT_URL);
     }
 
     @Override
