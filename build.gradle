@@ -26,10 +26,9 @@ ext{
 
     // App dependencies
     supportLibraryVersion = '27.0.2'
-    daggerVersion = '2.14.1'
     arch = '1.0.0'
     retrofit = '2.3.0'
-    glide= '4.1.1'
+    mockwebserver='3.9.1'
 }
 
 task clean(type: Delete) {

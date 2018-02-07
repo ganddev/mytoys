@@ -37,5 +37,4 @@ public class NavigationEntriesRepositoryTest {
         verify(mockedDataSource, times(1))
                 .getNavigationEntries(any(NavigationEntriesDataSource.LoadNavigationEntriesCallback.class));
     }
-
 }

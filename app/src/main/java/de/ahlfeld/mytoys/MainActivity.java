@@ -18,8 +18,13 @@ import android.webkit.WebViewClient;
 import java.util.List;
 
 import de.ahlfeld.mytoys.data.NavigationEntry;
+import de.ahlfeld.mytoys.data.source.NavigationEntriesRepository;
+import de.ahlfeld.mytoys.data.source.remote.NavigationEntriesDaoProvider;
+import de.ahlfeld.mytoys.data.source.remote.NavigationRemoteDataSource;
+import de.ahlfeld.mytoys.data.source.remote.OkHttpClientProvider;
 import de.ahlfeld.mytoys.databinding.ActivityMainBinding;
 import de.ahlfeld.mytoys.navigation.MainActivityViewModel;
+import de.ahlfeld.mytoys.navigation.MainActivityViewModelFactory;
 import de.ahlfeld.mytoys.navigation.NavigationEntryAdapter;
 import de.ahlfeld.mytoys.navigation.NavigationEntryItemNavigator;
 
@@ -29,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements NavigationEntryIt
     private ActivityMainBinding binding;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationEntryAdapter mNavigationEntryAdapter;
+
+    private MainActivityViewModelFactory factory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +47,16 @@ public class MainActivity extends AppCompatActivity implements NavigationEntryIt
         setupNavigation();
         setupWebView();
 
-        final MainActivityViewModel viewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+        factory = new MainActivityViewModelFactory(
+                new NavigationEntriesRepository(
+                        new NavigationRemoteDataSource(
+                                NavigationEntriesDaoProvider.get(OkHttpClientProvider.get()
+                                )
+                        )
+                )
+        );
+
+        final MainActivityViewModel viewModel = ViewModelProviders.of(this, factory).get(MainActivityViewModel.class);
 
         viewModel.getNavigationEntries().observe(this, new Observer<List<NavigationEntry>>() {
             @Override
@@ -91,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationEntryIt
     @Override
     public void onNavigationEntryClick(@NonNull NavigationEntry navigationEntry) {
         Log.d(TAG, "clicked on navigation entry: " + navigationEntry.getLabel());
-        MainActivityViewModel model = ViewModelProviders.of(this)
+        MainActivityViewModel model = ViewModelProviders.of(this, factory)
                 .get(MainActivityViewModel.class);
         model.navigationDown(navigationEntry);
     }
@@ -105,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements NavigationEntryIt
 
     @Override
     public void onCloseDrawerClicked() {
-        MainActivityViewModel model = ViewModelProviders.of(this)
+        MainActivityViewModel model = ViewModelProviders.of(this,factory)
                 .get(MainActivityViewModel.class);
         model.reset();
         closeDrawer();
