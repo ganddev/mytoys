@@ -14,10 +14,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class NavigationEntriesDaoProvider {
     private static NavigationEntriesDao sNavigationsEntriesDao;
 
-    public static NavigationEntriesDao get(@NonNull OkHttpClient httpClient) {
+    public static NavigationEntriesDao get(@NonNull OkHttpClient httpClient, @NonNull String baseUrl) {
         if (sNavigationsEntriesDao == null) {
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(NavigationEntriesDao.ENDPOINT)
+                    .baseUrl(baseUrl)
                     .client(httpClient)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();

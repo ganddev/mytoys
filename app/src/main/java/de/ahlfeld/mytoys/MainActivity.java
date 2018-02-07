@@ -19,6 +19,7 @@ import java.util.List;
 
 import de.ahlfeld.mytoys.data.NavigationEntry;
 import de.ahlfeld.mytoys.data.source.NavigationEntriesRepository;
+import de.ahlfeld.mytoys.data.source.remote.NavigationEntriesDao;
 import de.ahlfeld.mytoys.data.source.remote.NavigationEntriesDaoProvider;
 import de.ahlfeld.mytoys.data.source.remote.NavigationRemoteDataSource;
 import de.ahlfeld.mytoys.data.source.remote.OkHttpClientProvider;
@@ -47,16 +48,16 @@ public class MainActivity extends AppCompatActivity implements NavigationEntryIt
         setupNavigation();
         setupWebView();
 
+        OkHttpClientProvider httpClientProvider = new OkHttpClientProvider();
         factory = new MainActivityViewModelFactory(
                 new NavigationEntriesRepository(
                         new NavigationRemoteDataSource(
-                                NavigationEntriesDaoProvider.get(OkHttpClientProvider.get()
-                                )
-                        )
-                )
-        );
+                                NavigationEntriesDaoProvider.get(
+                                        httpClientProvider.get().build(),
+                                        NavigationEntriesDao.ENDPOINT))));
 
-        final MainActivityViewModel viewModel = ViewModelProviders.of(this, factory).get(MainActivityViewModel.class);
+        final MainActivityViewModel viewModel = ViewModelProviders.of(this, factory)
+                .get(MainActivityViewModel.class);
 
         viewModel.getNavigationEntries().observe(this, new Observer<List<NavigationEntry>>() {
             @Override
@@ -121,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements NavigationEntryIt
 
     @Override
     public void onCloseDrawerClicked() {
-        MainActivityViewModel model = ViewModelProviders.of(this,factory)
+        MainActivityViewModel model = ViewModelProviders.of(this, factory)
                 .get(MainActivityViewModel.class);
         model.reset();
         closeDrawer();

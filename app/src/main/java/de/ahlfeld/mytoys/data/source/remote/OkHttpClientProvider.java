@@ -8,17 +8,13 @@ import okhttp3.logging.HttpLoggingInterceptor;
  */
 
 public class OkHttpClientProvider {
-    private static OkHttpClient sOkHttpClient = null;
 
-    public static OkHttpClient get() {
-        if (sOkHttpClient == null) {
-            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            OkHttpClient.Builder httpBuilder = new OkHttpClient.Builder();
-            httpBuilder.addInterceptor(new RetrofitInterceptor());
+    public OkHttpClient.Builder get() {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient.Builder httpBuilder = new OkHttpClient.Builder();
+        httpBuilder.addInterceptor(new RetrofitInterceptor());
 
-            sOkHttpClient = httpBuilder.build();
-        }
-        return sOkHttpClient;
+        return httpBuilder;
     }
 }
