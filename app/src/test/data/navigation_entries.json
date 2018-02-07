@@ -1,0 +1,32 @@
+{
+  "navigationEntries": [
+    {
+      "type": "section",
+      "label": "Sortiment",
+      "children": [
+        {
+          "type": "node",
+          "label": "Alter",
+          "children": [
+            {
+              "type": "node",
+              "label": "Baby & Kleinkind",
+              "children": [
+                {
+                  "type": "link",
+                  "label": "0-6 Monate",
+                  "url": "http:\/\/www.mytoys.de\/0-6-months\/"
+                },
+                {
+                  "type": "link",
+                  "label": "7-12 Monate",
+                  "url": "http:\/\/www.mytoys.de\/7-12-months\/"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
