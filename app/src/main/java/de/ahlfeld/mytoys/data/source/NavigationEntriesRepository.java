@@ -25,7 +25,11 @@ public class NavigationEntriesRepository implements NavigationEntriesDataSource 
 
     @Override
     public void getNavigationEntries(@NonNull LoadNavigationEntriesCallback callback) {
-        getNavigationEntriesFromApi(callback);
+        if (getNavigationEntriesFromCache().isEmpty()) {
+            getNavigationEntriesFromApi(callback);
+        } else {
+            callback.onNavigationEntriesLoaded(getNavigationEntriesFromCache());
+        }
     }
 
     private List<NavigationEntry> getNavigationEntriesFromCache() {

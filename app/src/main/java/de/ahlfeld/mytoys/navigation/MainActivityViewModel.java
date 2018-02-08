@@ -46,14 +46,18 @@ public class MainActivityViewModel extends ViewModel implements NavigationEntrie
             reset();
         } else {
             mParentNavigationEntry = mNavigationStack.peek();
-            mNavigationEntries.setValue(mParentNavigationEntry.getChildren());
+            setNavigationEntries(mParentNavigationEntry.getChildren());
         }
+    }
+
+    public void setNavigationEntries(List<NavigationEntry> children) {
+        mNavigationEntries.setValue(children);
     }
 
     public void navigationDown(@NonNull NavigationEntry navigationEntry) {
         mNavigationStack.push(navigationEntry);
         mParentNavigationEntry = navigationEntry;
-        mNavigationEntries.setValue(navigationEntry.getChildren());
+        setNavigationEntries(navigationEntry.getChildren());
     }
 
     public void reset() {
@@ -68,11 +72,11 @@ public class MainActivityViewModel extends ViewModel implements NavigationEntrie
 
     @Override
     public void onNavigationEntriesLoaded(@NonNull List<NavigationEntry> navigationEntries) {
-        mNavigationEntries.setValue(navigationEntries);
+        setNavigationEntries(navigationEntries);
     }
 
     @Override
     public void onDataNotAvailable() {
-        mNavigationEntries.setValue(Collections.<NavigationEntry>emptyList());
+        setNavigationEntries(Collections.<NavigationEntry>emptyList());
     }
 }

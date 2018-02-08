@@ -8,9 +8,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.nio.file.Files;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import de.ahlfeld.mytoys.data.source.NavigationEntriesDataSource;
 import okhttp3.mockwebserver.MockResponse;
@@ -31,7 +34,6 @@ public class NavigationRemoteDataSourceTest {
 
     @Mock
     private NavigationEntriesDataSource.LoadNavigationEntriesCallback mockCallbacks;
-
     private MockWebServer server;
 
     @Before
@@ -39,15 +41,12 @@ public class NavigationRemoteDataSourceTest {
         MockitoAnnotations.initMocks(this);
 
         server = new MockWebServer();
+        server.start();
     }
 
     @Test
     public void getNavigationEntries_callsNavigationUrlWithXApiKeyHeader() throws Exception {
-        // Schedule some responses.
-        server.enqueue(new MockResponse().setBody(""));
-
-        // Start the server.
-        server.start();
+        server.enqueue(new MockResponse().setBody(positiveBody()));
 
         OkHttpClientProvider clientProvider = new OkHttpClientProvider();
         NavigationRemoteDataSource remoteDataSource = new NavigationRemoteDataSource(
@@ -61,17 +60,11 @@ public class NavigationRemoteDataSourceTest {
         RecordedRequest request1 = server.takeRequest();
         assertEquals("/navigation", request1.getPath().toString());
         assertNotNull(request1.getHeader("x-api-key"));
-
     }
 
     @Test
     public void getNavigationEntries_whenServerResponseWith200() throws Exception {
-        // Schedule some responses.
-        server.enqueue(new MockResponse().setResponseCode(200).setBody());
-
-        // Start the server.
-        server.start();
-
+        server.enqueue(new MockResponse().setBody(positiveBody()));
         OkHttpClientProvider clientProvider = new OkHttpClientProvider();
         NavigationRemoteDataSource remoteDataSource = new NavigationRemoteDataSource(
                 NavigationEntriesDaoProvider.get(
@@ -79,11 +72,6 @@ public class NavigationRemoteDataSourceTest {
                         server.url("").toString()));
 
         remoteDataSource.getNavigationEntries(mockCallbacks);
-
-        // Optional: confirm that your app made the HTTP requests you were expecting.
-        RecordedRequest request1 = server.takeRequest();
-        assertEquals("/navigation", request1.getPath().toString());
-        assertNotNull(request1.getHeader("x-api-key"));
 
         verify(mockCallbacks,times(1)).onNavigationEntriesLoaded(anyList());
     }
@@ -93,32 +81,30 @@ public class NavigationRemoteDataSourceTest {
         server.shutdown();
     }
 
+    @Test
+    public void getNavigationEntries_whenServerResponseWith400() throws Exception {
+        server.enqueue(new MockResponse().setResponseCode(400).setBody(""));
+        
+        OkHttpClientProvider clientProvider = new OkHttpClientProvider();
+        NavigationRemoteDataSource remoteDataSource = new NavigationRemoteDataSource(
+                NavigationEntriesDaoProvider.get(
+                        clientProvider.get().build(),
+                        server.url("").toString()));
 
-    private String positiveBody() {
-        return new String(Files.readAllBytes("./"))
-        FileInputStream inputStream = new FileInputStream("");
-        return '{
-            '"navigationEntries": [{'
-            "type": "section",
-                    "label": "Sortiment",
-                    "children": [{
-                "type": "node",
-                        "label": "Alter",
-                        "children": [{
-                    "type": "node",
-                            "label": "Baby & Kleinkind",
-                            "children": [{
-                        "type": "link",
-                                "label": "0-6 Monate",
-                                "url": "http:\/\/www.mytoys.de\/0-6-months\/"
-                    }, {
-                        "type": "link",
-                                "label": "7-12 Monate",
-                                "url": "http:\/\/www.mytoys.de\/7-12-months\/"
-                    }]
-                }]
-            }]
-        }]
-        }'
+        remoteDataSource.getNavigationEntries(mockCallbacks);
+
+        verify(mockCallbacks,times(1)).onDataNotAvailable();
+    }
+
+    private String positiveBody() throws IOException {
+        InputStream inputStream = new FileInputStream(new File("app/src/test/data/navigation_entries.json"));
+        BufferedReader buf = new BufferedReader(new InputStreamReader(inputStream));
+        String line = buf.readLine();
+        StringBuilder sb = new StringBuilder();
+        while(line != null){
+            sb.append(line).append("\n");
+            line = buf.readLine();
+        }
+        return sb.toString();
     }
 }
