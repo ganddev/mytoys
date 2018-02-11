@@ -9,11 +9,8 @@ import de.ahlfeld.mytoys.data.source.NavigationEntriesRepository;
 /**
  * Created by bjornahlfeld on 06.02.18.
  */
-
 public class MainActivityViewModelFactory implements ViewModelProvider.Factory {
-
     private NavigationEntriesRepository mNavigationEntryRepository;
-
 
     public MainActivityViewModelFactory(@NonNull NavigationEntriesRepository mNavigationEntryRepository) {
         this.mNavigationEntryRepository = mNavigationEntryRepository;

@@ -10,7 +10,6 @@ import retrofit2.Response;
 /**
  * Created by bjornahlfeld on 06.02.18.
  */
-
 public class NavigationRemoteDataSource implements NavigationEntriesDataSource {
     private NavigationEntriesDao mNavigationsEntriesDao;
 

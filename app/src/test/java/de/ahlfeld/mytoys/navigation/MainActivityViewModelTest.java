@@ -30,29 +30,22 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class MainActivityViewModelTest {
-
     @Mock
-    private NavigationEntriesRepository mockedRepository;
-
+    private NavigationEntriesRepository mMockedRepository;
     private MainActivityViewModel sut;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        sut = spy(new MainActivityViewModel(mockedRepository));
+        sut = spy(new MainActivityViewModel(mMockedRepository));
         doNothing().when(sut).setNavigationEntries(anyList());
     }
 
     @Test
     public void inittialization_callsRespository() {
-        verify(mockedRepository, times(1))
+        verify(mMockedRepository, times(1))
                 .getNavigationEntries(
                         any(NavigationEntriesDataSource.LoadNavigationEntriesCallback.class));
-    }
-
-    @Test
-    public void getParentNavigationEntry() throws Exception {
-
     }
 
     @Test
@@ -63,7 +56,7 @@ public class MainActivityViewModelTest {
         sut.naivagtionUp();
 
         assertNull(sut.getParentNavigationEntry());
-        verify(mockedRepository,times(2))
+        verify(mMockedRepository,times(2))
                 .getNavigationEntries(any(NavigationEntriesDataSource.LoadNavigationEntriesCallback.class));
     }
 
@@ -96,7 +89,7 @@ public class MainActivityViewModelTest {
         sut.reset();
 
         assertNull(sut.getParentNavigationEntry());
-        verify(mockedRepository, times(2))
+        verify(mMockedRepository, times(2))
                 .getNavigationEntries(
                         any(NavigationEntriesDataSource.LoadNavigationEntriesCallback.class));
     }
@@ -113,5 +106,4 @@ public class MainActivityViewModelTest {
         verify(sut,times(1))
                 .setNavigationEntries(Collections.<NavigationEntry>emptyList());
     }
-
 }

@@ -10,7 +10,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by bjornahlfeld on 06.02.18.
  */
-
 public class NavigationEntriesDaoProvider {
     private static NavigationEntriesDao sNavigationsEntriesDao;
 

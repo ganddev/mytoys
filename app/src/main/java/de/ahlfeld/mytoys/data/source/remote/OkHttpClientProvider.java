@@ -6,9 +6,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 /**
  * Created by bjornahlfeld on 06.02.18.
  */
-
 public class OkHttpClientProvider {
-
     public OkHttpClient.Builder get() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);

@@ -22,9 +22,8 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class NavigationHeaderViewModelTest {
-
     @Mock
-    private NavigationEntry mockedNavigationEntry;
+    private NavigationEntry mMockedNavigationEntry;
 
     @Mock
     private NavigationEntryItemNavigator mockedNavigationEntryItemNavigator;
@@ -39,16 +38,16 @@ public class NavigationHeaderViewModelTest {
     @Test
     public void getLabel_returnsTheLabelOfNavigationEntry() throws Exception {
         String MY_LABEL = "My Label";
-        when(mockedNavigationEntry.getLabel()).thenReturn(MY_LABEL);
+        when(mMockedNavigationEntry.getLabel()).thenReturn(MY_LABEL);
 
-        sut = new NavigationHeaderViewModel(mockedNavigationEntry);
+        sut = new NavigationHeaderViewModel(mMockedNavigationEntry);
 
         assertEquals(MY_LABEL, sut.getLabel().get());
     }
 
     @Test
     public void upIsProvided_returnsTrueWhenNavigationEntryIsNotNull() throws Exception {
-        sut = new NavigationHeaderViewModel(mockedNavigationEntry);
+        sut = new NavigationHeaderViewModel(mMockedNavigationEntry);
         assertTrue(sut.upIsProvided().get());
     }
 
@@ -60,7 +59,7 @@ public class NavigationHeaderViewModelTest {
 
     @Test
     public void onClose_callsOnClose() throws Exception {
-        sut = new NavigationHeaderViewModel(mockedNavigationEntry);
+        sut = new NavigationHeaderViewModel(mMockedNavigationEntry);
         sut.setmItemNavigator(mockedNavigationEntryItemNavigator);
 
         sut.onClose();
@@ -70,7 +69,7 @@ public class NavigationHeaderViewModelTest {
 
     @Test
     public void onUp_callsOnUpClicked() throws Exception {
-        sut = new NavigationHeaderViewModel(mockedNavigationEntry);
+        sut = new NavigationHeaderViewModel(mMockedNavigationEntry);
         sut.setmItemNavigator(mockedNavigationEntryItemNavigator);
 
         sut.onUp();

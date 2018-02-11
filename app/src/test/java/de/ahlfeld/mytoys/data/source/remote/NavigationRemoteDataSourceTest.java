@@ -31,69 +31,68 @@ import static org.mockito.Mockito.verify;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class NavigationRemoteDataSourceTest {
-
     @Mock
-    private NavigationEntriesDataSource.LoadNavigationEntriesCallback mockCallbacks;
-    private MockWebServer server;
+    private NavigationEntriesDataSource.LoadNavigationEntriesCallback mMockedCallbacks;
+    private MockWebServer mMockWebserver;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        server = new MockWebServer();
-        server.start();
+        mMockWebserver = new MockWebServer();
+        mMockWebserver.start();
     }
 
     @Test
     public void getNavigationEntries_callsNavigationUrlWithXApiKeyHeader() throws Exception {
-        server.enqueue(new MockResponse().setBody(positiveBody()));
+        mMockWebserver.enqueue(new MockResponse().setBody(positiveBody()));
 
         OkHttpClientProvider clientProvider = new OkHttpClientProvider();
         NavigationRemoteDataSource remoteDataSource = new NavigationRemoteDataSource(
                 NavigationEntriesDaoProvider.get(
                         clientProvider.get().build(),
-                        server.url("").toString()));
+                        mMockWebserver.url("").toString()));
 
-        remoteDataSource.getNavigationEntries(mockCallbacks);
+        remoteDataSource.getNavigationEntries(mMockedCallbacks);
 
         // Optional: confirm that your app made the HTTP requests you were expecting.
-        RecordedRequest request1 = server.takeRequest();
+        RecordedRequest request1 = mMockWebserver.takeRequest();
         assertEquals("/navigation", request1.getPath().toString());
         assertNotNull(request1.getHeader("x-api-key"));
     }
 
     @Test
     public void getNavigationEntries_whenServerResponseWith200() throws Exception {
-        server.enqueue(new MockResponse().setBody(positiveBody()));
+        mMockWebserver.enqueue(new MockResponse().setBody(positiveBody()));
         OkHttpClientProvider clientProvider = new OkHttpClientProvider();
         NavigationRemoteDataSource remoteDataSource = new NavigationRemoteDataSource(
                 NavigationEntriesDaoProvider.get(
                         clientProvider.get().build(),
-                        server.url("").toString()));
+                        mMockWebserver.url("").toString()));
 
-        remoteDataSource.getNavigationEntries(mockCallbacks);
+        remoteDataSource.getNavigationEntries(mMockedCallbacks);
 
-        verify(mockCallbacks,times(1)).onNavigationEntriesLoaded(anyList());
+        verify(mMockedCallbacks,times(1)).onNavigationEntriesLoaded(anyList());
     }
 
     @After
     public void tearDown() throws Exception {
-        server.shutdown();
+        mMockWebserver.shutdown();
     }
 
     @Test
     public void getNavigationEntries_whenServerResponseWith400() throws Exception {
-        server.enqueue(new MockResponse().setResponseCode(400).setBody(""));
+        mMockWebserver.enqueue(new MockResponse().setResponseCode(400).setBody(""));
         
         OkHttpClientProvider clientProvider = new OkHttpClientProvider();
         NavigationRemoteDataSource remoteDataSource = new NavigationRemoteDataSource(
                 NavigationEntriesDaoProvider.get(
                         clientProvider.get().build(),
-                        server.url("").toString()));
+                        mMockWebserver.url("").toString()));
 
-        remoteDataSource.getNavigationEntries(mockCallbacks);
+        remoteDataSource.getNavigationEntries(mMockedCallbacks);
 
-        verify(mockCallbacks,times(1)).onDataNotAvailable();
+        verify(mMockedCallbacks,times(1)).onDataNotAvailable();
     }
 
     private String positiveBody() throws IOException {

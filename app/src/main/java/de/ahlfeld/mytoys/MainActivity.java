@@ -32,7 +32,7 @@ import de.ahlfeld.mytoys.navigation.NavigationEntryItemNavigator;
 public class MainActivity extends AppCompatActivity implements NavigationEntryItemNavigator {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String DEFAULT_URL = "https://www.mytoys.de";
-    private ActivityMainBinding binding;
+    private ActivityMainBinding mActivityBinding;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationEntryAdapter mNavigationEntryAdapter;
 
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements NavigationEntryIt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        mActivityBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         setupToolbar();
         setupDrawerToggle();
@@ -66,21 +66,15 @@ public class MainActivity extends AppCompatActivity implements NavigationEntryIt
                         navigationEntries);
             }
         });
-        binding.setViewModel(viewModel);
+        mActivityBinding.setViewModel(viewModel);
     }
 
     private void setupWebView() {
-        WebView myWebView = binding.webView;
+        WebView myWebView = mActivityBinding.webView;
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         myWebView.setWebViewClient(new WebViewClient());
         myWebView.loadUrl(DEFAULT_URL);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        //viewModel.onStart();
     }
 
     @Override
@@ -116,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements NavigationEntryIt
     @Override
     public void onLinkClicked(@NonNull String url) {
         Log.d(TAG, "Clicked on link: " + url);
-        binding.webView.loadUrl(url);
+        mActivityBinding.webView.loadUrl(url);
         closeDrawer();
     }
 
@@ -141,15 +135,15 @@ public class MainActivity extends AppCompatActivity implements NavigationEntryIt
     }
 
     private void setupToolbar() {
-        setSupportActionBar(binding.toolbar.toolbar);
+        setSupportActionBar(mActivityBinding.toolbar.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
     }
 
     private void setupDrawerToggle() {
         mDrawerToggle = new ActionBarDrawerToggle(this,
-                binding.drawerLayout,
-                binding.toolbar.toolbar,
+                mActivityBinding.drawerLayout,
+                mActivityBinding.toolbar.toolbar,
                 R.string.app_name,
                 R.string.app_name);
         //This is necessary to change the icon of the Drawer Toggle upon state change.
@@ -158,12 +152,12 @@ public class MainActivity extends AppCompatActivity implements NavigationEntryIt
 
     private void setupNavigation() {
         mNavigationEntryAdapter = new NavigationEntryAdapter(this, this);
-        binding.leftDrawer.setAdapter(mNavigationEntryAdapter);
+        mActivityBinding.leftDrawer.setAdapter(mNavigationEntryAdapter);
     }
 
     private void closeDrawer() {
-        if (this.binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            this.binding.drawerLayout.closeDrawer(GravityCompat.START);
+        if (this.mActivityBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            this.mActivityBinding.drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
