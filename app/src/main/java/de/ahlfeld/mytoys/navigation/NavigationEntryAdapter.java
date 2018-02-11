@@ -21,7 +21,6 @@ import de.ahlfeld.mytoys.databinding.NavigationHeaderBinding;
 /**
  * Created by bjornahlfeld on 01.02.18.
  */
-
 public class NavigationEntryAdapter extends ArrayAdapter<NavigationEntry> {
     private static final int VIEWTYPES = 2; //Header + items
     private static final int HEADER_ELEMENT = 0;

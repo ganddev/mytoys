@@ -24,12 +24,10 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class NavigationEntryViewModelTest {
-
     @Mock
-    private NavigationEntry mockedNavigationEntry;
+    private NavigationEntry mMockedNavigationEntry;
     @Mock
-    NavigationEntryItemNavigator mockedNavigationEntryItemNavigator;
-
+    private NavigationEntryItemNavigator mockedNavigationEntryItemNavigator;
     private NavigationEntryViewModel sut;
 
     @Before
@@ -40,32 +38,32 @@ public class NavigationEntryViewModelTest {
     @Test
     public void getLabel_returnsTheLabelFromTheNavigationEntry() throws Exception {
         String MY_LABEL = "My Label";
-        when(mockedNavigationEntry.getLabel()).thenReturn(MY_LABEL);
-        sut = new NavigationEntryViewModel(mockedNavigationEntry);
+        when(mMockedNavigationEntry.getLabel()).thenReturn(MY_LABEL);
+        sut = new NavigationEntryViewModel(mMockedNavigationEntry);
 
         assertEquals(MY_LABEL, sut.getLabel().get());
     }
 
     @Test
     public void isSection_whenNavigationEntryTypeReturnsSection() throws Exception {
-        when(mockedNavigationEntry.getType()).thenReturn("section");
-        sut = new NavigationEntryViewModel(mockedNavigationEntry);
+        when(mMockedNavigationEntry.getType()).thenReturn("section");
+        sut = new NavigationEntryViewModel(mMockedNavigationEntry);
 
         assertTrue(sut.isSection().get());
     }
 
     @Test
     public void isSection_whenNavigationEntryTypeReturnsNode() throws Exception {
-        when(mockedNavigationEntry.getType()).thenReturn("node");
-        sut = new NavigationEntryViewModel(mockedNavigationEntry);
+        when(mMockedNavigationEntry.getType()).thenReturn("node");
+        sut = new NavigationEntryViewModel(mMockedNavigationEntry);
 
         assertFalse(sut.isSection().get());
     }
 
     @Test
     public void hasChildren_whenNavigationEntryHasNoChildren() throws Exception {
-        when(mockedNavigationEntry.getChildren()).thenReturn(Collections.<NavigationEntry>emptyList());
-        sut = new NavigationEntryViewModel(mockedNavigationEntry);
+        when(mMockedNavigationEntry.getChildren()).thenReturn(Collections.<NavigationEntry>emptyList());
+        sut = new NavigationEntryViewModel(mMockedNavigationEntry);
 
         assertFalse(sut.hasChildren().get());
     }
@@ -76,28 +74,28 @@ public class NavigationEntryViewModelTest {
 
     @Test
     public void onNavigationEntryClick_whenNavigationEntryIsNodeCallsNavigationEntryClicked() throws Exception {
-        when(mockedNavigationEntry.getType()).thenReturn("node");
-        sut = new NavigationEntryViewModel(mockedNavigationEntry);
+        when(mMockedNavigationEntry.getType()).thenReturn("node");
+        sut = new NavigationEntryViewModel(mMockedNavigationEntry);
         sut.setItemNavigator(mockedNavigationEntryItemNavigator);
 
         sut.onNavigationEntryClick();
 
         verify(mockedNavigationEntryItemNavigator,
                 times(1))
-                .onNavigationEntryClick(mockedNavigationEntry);
+                .onNavigationEntryClick(mMockedNavigationEntry);
     }
 
     @Test
     public void onNavigationEntryClick_whenNavigationEntryIsSectionCallsNothingNavigationEntryClicked() throws Exception {
-        when(mockedNavigationEntry.getType()).thenReturn("section");
-        sut = new NavigationEntryViewModel(mockedNavigationEntry);
+        when(mMockedNavigationEntry.getType()).thenReturn("section");
+        sut = new NavigationEntryViewModel(mMockedNavigationEntry);
         sut.setItemNavigator(mockedNavigationEntryItemNavigator);
 
         sut.onNavigationEntryClick();
 
         verify(mockedNavigationEntryItemNavigator,
                 times(0))
-                .onNavigationEntryClick(mockedNavigationEntry);
+                .onNavigationEntryClick(mMockedNavigationEntry);
         verify(mockedNavigationEntryItemNavigator,
                 times(0))
                 .onLinkClicked(anyString());
@@ -112,9 +110,9 @@ public class NavigationEntryViewModelTest {
     @Test
     public void onNavigationEntryClick_whenNavigationEntryIsLinkCallsOnLickClicked() throws Exception {
         String TEST_URL = "test_url";
-        when(mockedNavigationEntry.getType()).thenReturn("link");
-        when(mockedNavigationEntry.getUrl()).thenReturn(TEST_URL);
-        sut = new NavigationEntryViewModel(mockedNavigationEntry);
+        when(mMockedNavigationEntry.getType()).thenReturn("link");
+        when(mMockedNavigationEntry.getUrl()).thenReturn(TEST_URL);
+        sut = new NavigationEntryViewModel(mMockedNavigationEntry);
         sut.setItemNavigator(mockedNavigationEntryItemNavigator);
 
         sut.onNavigationEntryClick();

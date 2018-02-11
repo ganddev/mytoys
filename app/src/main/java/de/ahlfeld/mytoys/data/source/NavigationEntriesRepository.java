@@ -10,9 +10,7 @@ import de.ahlfeld.mytoys.data.NavigationEntry;
 /**
  * Created by bjornahlfeld on 01.02.18.
  */
-
 public class NavigationEntriesRepository implements NavigationEntriesDataSource {
-
     private final NavigationEntriesDataSource mNavigationEntriesRemoteDataSource;
 
     private List<NavigationEntry> mCachedNavigationEntries;
@@ -22,7 +20,6 @@ public class NavigationEntriesRepository implements NavigationEntriesDataSource 
         mCachedNavigationEntries = getInitialNavigationEntries();
     }
 
-
     @Override
     public void getNavigationEntries(@NonNull LoadNavigationEntriesCallback callback) {
         if (getNavigationEntriesFromCache().isEmpty()) {
@@ -30,14 +27,6 @@ public class NavigationEntriesRepository implements NavigationEntriesDataSource 
         } else {
             callback.onNavigationEntriesLoaded(getNavigationEntriesFromCache());
         }
-    }
-
-    private List<NavigationEntry> getNavigationEntriesFromCache() {
-        return mCachedNavigationEntries;
-    }
-
-    private void getNavigationEntriesFromApi(@NonNull LoadNavigationEntriesCallback callback) {
-        mNavigationEntriesRemoteDataSource.getNavigationEntries(callback);
     }
 
     private List<NavigationEntry> getInitialNavigationEntries() {
@@ -106,5 +95,13 @@ public class NavigationEntriesRepository implements NavigationEntriesDataSource 
         navigationEntries.add(sectionThree);
 
         return navigationEntries;
+    }
+
+    private List<NavigationEntry> getNavigationEntriesFromCache() {
+        return mCachedNavigationEntries;
+    }
+
+    private void getNavigationEntriesFromApi(@NonNull LoadNavigationEntriesCallback callback) {
+        mNavigationEntriesRemoteDataSource.getNavigationEntries(callback);
     }
 }

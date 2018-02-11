@@ -14,8 +14,7 @@ import de.ahlfeld.mytoys.data.NavigationEntry;
  */
 
 public class NavigationEntryViewModel extends ViewModel {
-    private WeakReference<NavigationEntryItemNavigator> itemNavigator;
-
+    private WeakReference<NavigationEntryItemNavigator> mItemNavigator;
     private ObservableField<NavigationEntry> mNavigationEntry = new ObservableField<>();
     private ObservableField<String> mLabel = new ObservableField();
     private ObservableBoolean isSection = new ObservableBoolean();
@@ -41,12 +40,12 @@ public class NavigationEntryViewModel extends ViewModel {
     }
 
     public void setItemNavigator(NavigationEntryItemNavigator navigationEntryItemNavigator) {
-        this.itemNavigator = new WeakReference<>(navigationEntryItemNavigator);
+        this.mItemNavigator = new WeakReference<>(navigationEntryItemNavigator);
     }
 
 
     public void onNavigationEntryClick() {
-        if (itemNavigator != null && itemNavigator.get() != null) {
+        if (mItemNavigator != null && mItemNavigator.get() != null) {
             navigateTo(mNavigationEntry.get());
         }
     }
@@ -63,10 +62,10 @@ public class NavigationEntryViewModel extends ViewModel {
             case "section":
                 return;
             case "node":
-                itemNavigator.get().onNavigationEntryClick(navigationEntry);
+                mItemNavigator.get().onNavigationEntryClick(navigationEntry);
                 break;
             case "link":
-                itemNavigator.get().onLinkClicked(navigationEntry.getUrl());
+                mItemNavigator.get().onLinkClicked(navigationEntry.getUrl());
                 break;
             default:
                 throw new IllegalStateException("type is not supported: " + navigationEntry.getType());

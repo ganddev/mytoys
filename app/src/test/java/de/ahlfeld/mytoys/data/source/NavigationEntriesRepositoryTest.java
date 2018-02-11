@@ -16,25 +16,22 @@ import static org.mockito.Mockito.verify;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class NavigationEntriesRepositoryTest {
-
     @Mock
-    NavigationEntriesDataSource mockedDataSource;
-
+    private NavigationEntriesDataSource mMockedDataSource;
     @Mock
-    NavigationEntriesDataSource.LoadNavigationEntriesCallback mockedCallback;
-
+    private NavigationEntriesDataSource.LoadNavigationEntriesCallback mMockedCallback;
     private NavigationEntriesRepository sut;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        sut = new NavigationEntriesRepository(mockedDataSource);
+        sut = new NavigationEntriesRepository(mMockedDataSource);
     }
 
     @Test
     public void getNavigationEntries_callsDatasource() throws Exception {
-        sut.getNavigationEntries(mockedCallback);
-        verify(mockedDataSource, times(1))
+        sut.getNavigationEntries(mMockedCallback);
+        verify(mMockedDataSource, times(1))
                 .getNavigationEntries(any(NavigationEntriesDataSource.LoadNavigationEntriesCallback.class));
     }
 }
